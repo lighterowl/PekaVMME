@@ -1,3 +1,4 @@
+package midlet;
 
 import java.io.UnsupportedEncodingException;
 import javax.microedition.lcdui.Alert;

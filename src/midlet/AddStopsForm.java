@@ -1,3 +1,5 @@
+package midlet;
+
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
