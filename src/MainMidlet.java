@@ -18,7 +18,7 @@ public class MainMidlet extends MIDlet {
   }
 
   public void startApp() {
-    Display.getDisplay(this).setCurrent(mMainForm);
+    disp().setCurrent(mMainForm);
   }
 
   public void pauseApp() {
@@ -37,18 +37,22 @@ public class MainMidlet extends MIDlet {
   }
 
   public void displayAddStopsForm() {
-    Display.getDisplay(this).setCurrent(mAddStopsForm);
+    disp().setCurrent(mAddStopsForm);
   }
 
   public void goBack() {
     Displayable current = Display.getDisplay(this).getCurrent();
     if (current == mAddStopsForm) {
-      Display.getDisplay(this).setCurrent(mMainForm);
+      disp().setCurrent(mMainForm);
     }
   }
 
   public void displayAlert(Alert a) {
-    Displayable current = Display.getDisplay(this).getCurrent();
-    Display.getDisplay(this).setCurrent(a, current);
+    Displayable current = disp().getCurrent();
+    disp().setCurrent(a, current);
+  }
+
+  private Display disp() {
+    return Display.getDisplay(this);
   }
 }
