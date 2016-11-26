@@ -1,4 +1,5 @@
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.*;
@@ -44,5 +45,10 @@ public class MainMidlet extends MIDlet {
     if (current == mAddStopsForm) {
       Display.getDisplay(this).setCurrent(mMainForm);
     }
+  }
+
+  public void displayAlert(Alert a) {
+    Displayable current = Display.getDisplay(this).getCurrent();
+    Display.getDisplay(this).setCurrent(a, current);
   }
 }
