@@ -1,5 +1,6 @@
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.*;
 
 /**
@@ -7,8 +8,8 @@ import javax.microedition.midlet.*;
  */
 public class MainMidlet extends MIDlet {
 
-  private MainForm mMainForm;
-  private AddStopsForm mAddStopsForm;
+  private final MainForm mMainForm;
+  private final AddStopsForm mAddStopsForm;
 
   public MainMidlet() {
     mMainForm = new MainForm(this);
@@ -36,5 +37,12 @@ public class MainMidlet extends MIDlet {
 
   public void displayAddStopsForm() {
     Display.getDisplay(this).setCurrent(mAddStopsForm);
+  }
+
+  public void goBack() {
+    Displayable current = Display.getDisplay(this).getCurrent();
+    if (current == mAddStopsForm) {
+      Display.getDisplay(this).setCurrent(mMainForm);
+    }
   }
 }
