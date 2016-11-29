@@ -108,7 +108,7 @@ public class VMCommunicator {
     try {
       conn = createConnection();
       out = conn.openOutputStream();
-      addMethodParams(conn.openOutputStream(), m.getParams());
+      addMethodParams(out, m.getParams());
       in = conn.openInputStream();
       m.parse(getJSONFromInputStream(in));
     } catch (IOException ex) {
