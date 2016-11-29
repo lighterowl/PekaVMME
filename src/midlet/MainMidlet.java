@@ -3,6 +3,8 @@ package midlet;
 import java.io.UnsupportedEncodingException;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.*;
@@ -82,9 +84,15 @@ public class MainMidlet extends MIDlet {
       } catch (UnsupportedEncodingException ex2) {
         // nope.
         Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "
-                + "Aplikacja nie będzie działać poprawnie", null, AlertType.ERROR);
+                + "Aplikacja zakończy działanie", null, AlertType.ERROR);
         utf8NotSupported.setTimeout(Alert.FOREVER);
-        disp().setCurrent(utf8NotSupported, mMainForm);
+        disp().setCurrent(utf8NotSupported);
+        utf8NotSupported.setCommandListener(new CommandListener() {
+          public void commandAction(Command c, Displayable d) {
+            // nothing else to do.
+            shutdown();
+          }
+        });
         return false;
       }
     }
