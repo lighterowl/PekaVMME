@@ -69,10 +69,16 @@ public class VMCommunicator {
     return conn;
   }
 
-  private static void addMethodParams(OutputStream connOutputStream, String method,
-          String jsonParams) throws IOException {
+  private class Invocation {
+
+    public String methodName;
+    public String arguments;
+  }
+
+  private static void addMethodParams(OutputStream connOutputStream, Invocation params)
+          throws IOException {
     try {
-      String postParams = "method=" + method + "&p0=" + jsonParams;
+      String postParams = "method=" + params.methodName + "&p0=" + params.arguments;
       byte[] encodedParams = postParams.getBytes(MainMidlet.getUTF8Name());
       connOutputStream.write(encodedParams);
     } catch (UnsupportedEncodingException ex) {
@@ -81,12 +87,14 @@ public class VMCommunicator {
     }
   }
 
-  private interface ResultParser {
+  private interface MethodContext {
+
+    Invocation getParams();
 
     void parse(JSONObject o) throws JSONException;
   }
 
-  private static void readVirtualMonitorData(ResultReceiver rcv, ResultParser p) {
+  private static void readVirtualMonitorData(ResultReceiver rcv, MethodContext m) {
     HttpConnection conn = null;
     OutputStream out = null;
     InputStream in = null;
@@ -95,9 +103,9 @@ public class VMCommunicator {
     try {
       conn = createConnection();
       out = conn.openOutputStream();
-      addMethodParams(conn.openOutputStream(), "foo", "bar");
+      addMethodParams(conn.openOutputStream(), m.getParams());
       in = conn.openInputStream();
-      p.parse(getJSONFromInputStream(in));
+      m.parse(getJSONFromInputStream(in));
     } catch (IOException ex) {
       ioEx = ex;
     } catch (JSONException ex) {
