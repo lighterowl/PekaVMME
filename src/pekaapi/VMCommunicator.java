@@ -8,6 +8,7 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import midlet.MainMidlet;
+import org.json.me.JSONArray;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
 
@@ -69,10 +70,14 @@ public class VMCommunicator {
     return conn;
   }
 
-  private class Invocation {
+  private static class Invocation {
 
-    public String methodName;
-    public String arguments;
+    public Invocation(final String m, final String a) {
+      methodName = m;
+      arguments = a;
+    }
+    public final String methodName;
+    public final String arguments;
   }
 
   private static void addMethodParams(OutputStream connOutputStream, Invocation params)
@@ -131,6 +136,38 @@ public class VMCommunicator {
     if (jsonEx != null) {
       rcv.onJSONError(jsonEx);
     }
+  }
+
+  private static void runThreadWrapper(final ResultReceiver rcv, final MethodContext m) {
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        readVirtualMonitorData(rcv, m);
+      }
+    });
+    t.start();
+  }
+
+  public static void getStopPoints(final String pattern, final GetStopPointsReceiver cbk) {
+    runThreadWrapper(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("pattern", pattern);
+          return new Invocation("getStopPoints", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray result = o.getJSONArray("success");
+        Vector stopPoints = new Vector(result.length());
+        for (int i = 0; i < result.length(); ++i) {
+          stopPoints.addElement(new StopPoint(result.getJSONObject(i)));
+        }
+        cbk.onStopPointsReceived(stopPoints);
+      }
+    });
   }
 
   private static JSONObject getJSONFromInputStream(InputStream in)
