@@ -125,6 +125,12 @@ public class VMCommunicator {
       } catch (IOException e) {
       }
     }
+    if (ioEx != null) {
+      rcv.onCommError(ioEx);
+    }
+    if (jsonEx != null) {
+      rcv.onJSONError(jsonEx);
+    }
   }
 
   private static JSONObject getJSONFromInputStream(InputStream in)
