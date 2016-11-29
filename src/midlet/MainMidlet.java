@@ -83,6 +83,7 @@ public class MainMidlet extends MIDlet {
         // nope.
         Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "
                 + "Aplikacja nie będzie działać poprawnie", null, AlertType.ERROR);
+        utf8NotSupported.setTimeout(Alert.FOREVER);
         disp().setCurrent(utf8NotSupported, mMainForm);
         return false;
       }
