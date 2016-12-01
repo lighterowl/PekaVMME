@@ -29,7 +29,8 @@ public class StopPointsList extends List {
         if (c == BACK_COMMAND) {
           mMidlet.goBack();
         } else if (c == CHOOSE_STOP_POINT) {
-          // ask midlet to display the bollards for the chosen stop point.
+          mMidlet.displayBollardsAtStopPoint(
+                  ((StopPoint) mStopPoints.elementAt(getSelectedIndex())).getName());
         }
       }
     });

@@ -22,6 +22,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private final MainForm mMainForm;
   private final AddStopsForm mAddStopsForm;
   private StopPointsList mStopPointsList;
+  private BollardsList mBollardsList;
 
   public MainMidlet() {
     mMainForm = new MainForm(this);
@@ -60,6 +61,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     } else if (current == mStopPointsList) {
       disp().setCurrent(mMainForm);
       mStopPointsList = null;
+    } else if (current == mBollardsList) {
+      disp().setCurrent(mStopPointsList);
+      mBollardsList = null;
     }
   }
 
@@ -78,6 +82,34 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
               public void run() {
                 mStopPointsList = new StopPointsList(MainMidlet.this, stopPoints);
                 disp().setCurrent(mStopPointsList);
+              }
+            });
+          }
+
+          public void onJSONError(JSONException e) {
+            onJSONError(e);
+          }
+
+          public void onCommError(IOException e) {
+            onCommError(e);
+          }
+        });
+      }
+    });
+    t.start();
+  }
+
+  public void displayBollardsAtStopPoint(final String stopPointName) {
+    disp().setCurrent(createDownloadingAlert());
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        VMCommunicator.getBollardsByStopPoint(stopPointName,
+                new VMCommunicator.BollardsByStopPointReceiver() {
+          public void onBollardsByStopPointReceived(final Vector bollardsWithDirections) {
+            disp().callSerially(new Runnable() {
+              public void run() {
+                mBollardsList = new BollardsList(MainMidlet.this, bollardsWithDirections);
+                disp().setCurrent(mBollardsList);
               }
             });
           }
