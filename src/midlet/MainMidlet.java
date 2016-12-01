@@ -1,6 +1,8 @@
 package midlet;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Vector;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
@@ -9,11 +11,13 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 import javax.microedition.midlet.*;
+import org.json.me.JSONException;
+import pekaapi.VMCommunicator;
 
 /**
  * @author Daniel
  */
-public class MainMidlet extends MIDlet {
+public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver {
 
   private final MainForm mMainForm;
   private final AddStopsForm mAddStopsForm;
@@ -60,20 +64,27 @@ public class MainMidlet extends MIDlet {
     disp().setCurrent(a, current);
   }
 
-  public void displayBollardsByStopPoint(final String pattern) {
+  public void displayStopPoints(final String pattern) {
     disp().setCurrent(createDownloadingAlert());
     Thread t = new Thread(new Runnable() {
       public void run() {
-        try {
-          // TODO : actually call network code here.
-          Thread.sleep(5000);
-          disp().callSerially(new Runnable() {
-            public void run() {
-              disp().setCurrent(mMainForm);
-            }
-          });
-        } catch (InterruptedException ex) {
-        }
+        VMCommunicator.getStopPoints(pattern, new VMCommunicator.GetStopPointsReceiver() {
+          public void onStopPointsReceived(final Vector stopPoints) {
+            disp().callSerially(new Runnable() {
+              public void run() {
+                disp().setCurrent(new StopPointsList(stopPoints));
+              }
+            });
+          }
+
+          public void onJSONError(JSONException e) {
+            onJSONError(e);
+          }
+
+          public void onCommError(IOException e) {
+            onCommError(e);
+          }
+        });
       }
     });
     t.start();
@@ -122,12 +133,38 @@ public class MainMidlet extends MIDlet {
   private Alert createDownloadingAlert() {
     Alert downloading = new Alert("Pobieranie danych", "Proszę czekać", null, AlertType.INFO);
     downloading.setTimeout(Alert.FOREVER);
-    downloading.addCommand(new Command(" ", Command.OK, 1));
+    downloading.addCommand(new Command("Przerwij", Command.CANCEL, 1));
     downloading.setCommandListener(new CommandListener() {
       public void commandAction(Command c, Displayable d) {
+        // TODO : stop the network connection thread
       }
     });
     downloading.setIndicator(new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING));
     return downloading;
+  }
+
+  private Alert createNetworkErrorAlert() {
+    Alert networkError = new Alert("Błąd sieci", "Pobieranie danych nie powiodło się", null,
+            AlertType.ERROR);
+    networkError.setTimeout(Alert.FOREVER);
+    return networkError;
+  }
+
+  public void onJSONError(JSONException e) {
+    disp().callSerially(new Runnable() {
+      public void run() {
+        disp().setCurrent(createNetworkErrorAlert(), mMainForm);
+      }
+    });
+    e.printStackTrace();
+  }
+
+  public void onCommError(IOException e) {
+    disp().callSerially(new Runnable() {
+      public void run() {
+        disp().setCurrent(createNetworkErrorAlert(), mMainForm);
+      }
+    });
+    e.printStackTrace();
   }
 }

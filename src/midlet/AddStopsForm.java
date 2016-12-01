@@ -38,7 +38,7 @@ public class AddStopsForm extends Form {
                     AlertType.ERROR));
             return;
           }
-          mParent.displayBollardsByStopPoint(pattern);
+          mParent.displayStopPoints(pattern);
         }
       }
     });

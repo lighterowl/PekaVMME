@@ -14,7 +14,7 @@ import org.json.me.JSONObject;
 
 public class VMCommunicator {
 
-  private interface ResultReceiver {
+  public interface ResultReceiver {
 
     public void onJSONError(JSONException e);
 
