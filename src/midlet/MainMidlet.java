@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Gauge;
 import javax.microedition.midlet.*;
 
 /**
@@ -59,6 +60,25 @@ public class MainMidlet extends MIDlet {
     disp().setCurrent(a, current);
   }
 
+  public void displayBollardsByStopPoint(final String pattern) {
+    disp().setCurrent(createDownloadingAlert());
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        try {
+          // TODO : actually call network code here.
+          Thread.sleep(5000);
+          disp().callSerially(new Runnable() {
+            public void run() {
+              disp().setCurrent(mMainForm);
+            }
+          });
+        } catch (InterruptedException ex) {
+        }
+      }
+    });
+    t.start();
+  }
+
   private Display disp() {
     return Display.getDisplay(this);
   }
@@ -97,5 +117,17 @@ public class MainMidlet extends MIDlet {
       }
     }
     return true;
+  }
+
+  private Alert createDownloadingAlert() {
+    Alert downloading = new Alert("Pobieranie danych", "Proszę czekać", null, AlertType.INFO);
+    downloading.setTimeout(Alert.FOREVER);
+    downloading.addCommand(new Command(" ", Command.OK, 1));
+    downloading.setCommandListener(new CommandListener() {
+      public void commandAction(Command c, Displayable d) {
+      }
+    });
+    downloading.setIndicator(new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING));
+    return downloading;
   }
 }

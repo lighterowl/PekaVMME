@@ -1,6 +1,5 @@
 package midlet;
 
-
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.ChoiceGroup;
@@ -33,11 +32,13 @@ public class AddStopsForm extends Form {
         if (c == BACK_COMMAND) {
           mParent.goBack();
         } else if (c == SEARCH_COMMAND) {
-          if (mPatternInput.getString().length() == 0) {
-            mParent.displayAlert(new Alert("Błąd", "Wpisana nazwa jest pusta", null, AlertType.ERROR));
+          String pattern = mPatternInput.getString();
+          if (pattern.length() == 0) {
+            mParent.displayAlert(new Alert("Błąd", "Wpisana nazwa jest pusta", null,
+                    AlertType.ERROR));
             return;
           }
-          System.out.println("foo");
+          mParent.displayBollardsByStopPoint(pattern);
         }
       }
     });
