@@ -138,17 +138,8 @@ public class VMCommunicator {
     }
   }
 
-  private static void runThreadWrapper(final ResultReceiver rcv, final MethodContext m) {
-    Thread t = new Thread(new Runnable() {
-      public void run() {
-        readVirtualMonitorData(rcv, m);
-      }
-    });
-    t.start();
-  }
-
   public static void getStopPoints(final String pattern, final GetStopPointsReceiver cbk) {
-    runThreadWrapper(cbk, new MethodContext() {
+    readVirtualMonitorData(cbk, new MethodContext() {
       public Invocation getParams() {
         try {
           JSONObject o = new JSONObject();
