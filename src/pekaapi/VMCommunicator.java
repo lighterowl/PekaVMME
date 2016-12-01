@@ -23,42 +23,42 @@ public class VMCommunicator {
 
   public interface GetStopPointsReceiver extends ResultReceiver {
 
-    public void onStopPointsReceived(Vector stopPoints);
+    public void onStopPointsReceived(final Vector stopPoints);
   }
 
   public interface BollardsByStopPointReceiver extends ResultReceiver {
 
-    public void onBollardsByStopPointReceived(Vector bollardsWithDirections);
+    public void onBollardsByStopPointReceived(final Vector bollardsWithDirections);
   }
 
   public interface BollardsByStreetReceiver extends ResultReceiver {
 
-    public void onBollardsByStreetReceived(Vector bollardsWithDirections);
+    public void onBollardsByStreetReceived(final Vector bollardsWithDirections);
   }
 
   public interface BollardsByLineReceiver extends ResultReceiver {
 
-    public void onBollardsByLineReceived(Vector lineRoutes);
+    public void onBollardsByLineReceived(final Vector lineRoutes);
   }
 
   public interface LinesReceiver extends ResultReceiver {
 
-    public void onLinesReceived(Vector lineNames);
+    public void onLinesReceived(final Vector lineNames);
   }
 
   public interface StreetsReceiver extends ResultReceiver {
 
-    public void onStreetsReceived(Vector streets);
+    public void onStreetsReceived(final Vector streets);
   }
 
   public interface TimesReceiver extends ResultReceiver {
 
-    public void onTimesReceived(BollardWithTimes times);
+    public void onTimesReceived(final BollardWithTimes times);
   }
 
   public interface BollardsWithTimesReceiver extends ResultReceiver {
 
-    public void onBollardsWithTimesReceived(Vector bollardsWithTimes);
+    public void onBollardsWithTimesReceived(final Vector bollardsWithTimes);
   }
 
   private static HttpConnection createConnection() throws IOException {
