@@ -161,6 +161,164 @@ public class VMCommunicator {
     });
   }
 
+  public static void getBollardsByStopPoint(final String name,
+          final BollardsByStopPointReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("name", name);
+          return new Invocation("getBollardsByStopPoint", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray bollards = o.getJSONObject("success").getJSONArray("bollards");
+        Vector bollardsWithDirections = new Vector(bollards.length());
+        for (int i = 0; i < bollards.length(); ++i) {
+          bollardsWithDirections.addElement(new BollardWithDirections(bollards.getJSONObject(i)));
+        }
+        cbk.onBollardsByStopPointReceived(bollardsWithDirections);
+      }
+    });
+  }
+
+  public static void getBollardsByStreet(final String name, final BollardsByStreetReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("name", name);
+          return new Invocation("getBollardsByStreet", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray bollards = o.getJSONObject("success").getJSONArray("bollards");
+        Vector bollardsWithDirections = new Vector(bollards.length());
+        for (int i = 0; i < bollards.length(); ++i) {
+          bollardsWithDirections.addElement(new BollardWithDirections(bollards.getJSONObject(i)));
+        }
+        cbk.onBollardsByStreetReceived(bollardsWithDirections);
+      }
+    });
+  }
+
+  public static void getBollardsByLine(final String name, final BollardsByLineReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("name", name);
+          return new Invocation("getBollardsByLine", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray directions = o.getJSONObject("success").getJSONArray("directions");
+        Vector lineRoutes = new Vector(directions.length());
+        for (int i = 0; i < directions.length(); ++i) {
+          lineRoutes.addElement(new LineRoute(directions.getJSONObject(i)));
+        }
+        cbk.onBollardsByLineReceived(lineRoutes);
+      }
+    });
+  }
+
+  public static void getLines(final String pattern, final LinesReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("pattern", pattern);
+          return new Invocation("getLines", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray names = o.getJSONArray("success");
+        Vector lineNames = new Vector(names.length());
+        for (int i = 0; i < names.length(); ++i) {
+          lineNames.addElement(names.getJSONObject(i).getString("name"));
+        }
+        cbk.onLinesReceived(lineNames);
+      }
+    });
+  }
+
+  public static void getStreets(final String pattern, final StreetsReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("pattern", pattern);
+          return new Invocation("getStreets", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray streetsArray = o.getJSONArray("success");
+        Vector streets = new Vector(streetsArray.length());
+        for (int i = 0; i < streetsArray.length(); ++i) {
+          streets.addElement(new Street(streetsArray.getJSONObject(i)));
+        }
+        cbk.onStreesReceived(streets);
+      }
+    });
+  }
+
+  public static void getTimes(final String bollardSymbol, final TimesReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("symbol", bollardSymbol);
+          return new Invocation("getTimes", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        cbk.onTimesReceived(new BollardWithTimes(o.getJSONObject("success")));
+      }
+    });
+  }
+
+  public static void getTimesForAllBollards(final String stopPointName,
+          final BollardsWithTimesReceiver cbk) {
+    readVirtualMonitorData(cbk, new MethodContext() {
+      public Invocation getParams() {
+        try {
+          JSONObject o = new JSONObject();
+          o.put("name", stopPointName);
+          return new Invocation("getTimesForAllBollards", o.toString());
+        } catch (JSONException e) {
+        }
+        return null;
+      }
+
+      public void parse(JSONObject o) throws JSONException {
+        JSONArray array = o.getJSONObject("success").getJSONArray("bollardsWithTimes");
+        Vector bollardsWithTimes = new Vector(array.length());
+        for (int i = 0; i < array.length(); ++i) {
+          bollardsWithTimes.addElement(new BollardWithTimes(array.getJSONObject(i)));
+        }
+        cbk.onBollardsWithTimesReceived(bollardsWithTimes);
+      }
+    });
+  }
+
   private static JSONObject getJSONFromInputStream(InputStream in)
           throws IOException, JSONException {
     // okay, bear with me, but this is why this is needed :
