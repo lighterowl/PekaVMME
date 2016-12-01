@@ -48,7 +48,7 @@ public class VMCommunicator {
 
   public interface StreetsReceiver extends ResultReceiver {
 
-    public void onStreesReceived(Vector streets);
+    public void onStreetsReceived(Vector streets);
   }
 
   public interface TimesReceiver extends ResultReceiver {
@@ -272,7 +272,7 @@ public class VMCommunicator {
         for (int i = 0; i < streetsArray.length(); ++i) {
           streets.addElement(new Street(streetsArray.getJSONObject(i)));
         }
-        cbk.onStreesReceived(streets);
+        cbk.onStreetsReceived(streets);
       }
     });
   }
