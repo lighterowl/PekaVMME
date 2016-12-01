@@ -13,6 +13,7 @@ import javax.microedition.lcdui.Gauge;
 import javax.microedition.midlet.*;
 import org.json.me.JSONException;
 import pekaapi.VMCommunicator;
+import util.Serialization;
 
 /**
  * @author Daniel
@@ -30,8 +31,19 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   }
 
   public void startApp() {
-    if (initializeUTF8()) {
+    if (Serialization.initializeUTF8()) {
       disp().setCurrent(mMainForm);
+    } else {
+      Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "
+              + "Aplikacja zakończy działanie", null, AlertType.ERROR);
+      utf8NotSupported.setTimeout(Alert.FOREVER);
+      disp().setCurrent(utf8NotSupported);
+      utf8NotSupported.setCommandListener(new CommandListener() {
+        public void commandAction(Command c, Displayable d) {
+          // nothing else to do.
+          shutdown();
+        }
+      });
     }
   }
 
@@ -129,42 +141,6 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
 
   private Display disp() {
     return Display.getDisplay(this);
-  }
-
-  public static String getUTF8Name() {
-    return NAME_FOR_UTF8;
-  }
-  private static String NAME_FOR_UTF8;
-
-  private boolean initializeUTF8() {
-    String xyz = "foobar";
-    try {
-      // some J2ME implementations in real phones use UTF8 as the name for the encoding. check which
-      // one is supported and then use it throughout the application. bail if none is, since it
-      // won't be possible to send properly encoded data then.
-      NAME_FOR_UTF8 = "UTF-8";
-      xyz.getBytes(NAME_FOR_UTF8);
-    } catch (UnsupportedEncodingException ex1) {
-      try {
-        // pretty please...
-        NAME_FOR_UTF8 = "UTF8";
-        xyz.getBytes(NAME_FOR_UTF8);
-      } catch (UnsupportedEncodingException ex2) {
-        // nope.
-        Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "
-                + "Aplikacja zakończy działanie", null, AlertType.ERROR);
-        utf8NotSupported.setTimeout(Alert.FOREVER);
-        disp().setCurrent(utf8NotSupported);
-        utf8NotSupported.setCommandListener(new CommandListener() {
-          public void commandAction(Command c, Displayable d) {
-            // nothing else to do.
-            shutdown();
-          }
-        });
-        return false;
-      }
-    }
-    return true;
   }
 
   private Alert createDownloadingAlert() {

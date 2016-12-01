@@ -11,6 +11,7 @@ import midlet.MainMidlet;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
+import util.Serialization;
 
 public class VMCommunicator {
 
@@ -84,7 +85,7 @@ public class VMCommunicator {
           throws IOException {
     try {
       String postParams = "method=" + params.methodName + "&p0=" + params.arguments;
-      byte[] encodedParams = postParams.getBytes(MainMidlet.getUTF8Name());
+      byte[] encodedParams = postParams.getBytes(Serialization.getUTF8Name());
       connOutputStream.write(encodedParams);
     } catch (UnsupportedEncodingException ex) {
       // this should never happen, since we check for this at app initialization time and explicitly
@@ -344,6 +345,6 @@ public class VMCommunicator {
         buf = newbuf;
       }
     }
-    return new JSONObject(new String(buf, 0, offset, MainMidlet.getUTF8Name()));
+    return new JSONObject(new String(buf, 0, offset, Serialization.getUTF8Name()));
   }
 }
