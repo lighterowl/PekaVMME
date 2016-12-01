@@ -21,6 +21,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
 
   private final MainForm mMainForm;
   private final AddStopsForm mAddStopsForm;
+  private StopPointsList mStopPointsList;
 
   public MainMidlet() {
     mMainForm = new MainForm(this);
@@ -56,6 +57,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     Displayable current = disp().getCurrent();
     if (current == mAddStopsForm) {
       disp().setCurrent(mMainForm);
+    } else if (current == mStopPointsList) {
+      disp().setCurrent(mMainForm);
+      mStopPointsList = null;
     }
   }
 
@@ -72,7 +76,8 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
           public void onStopPointsReceived(final Vector stopPoints) {
             disp().callSerially(new Runnable() {
               public void run() {
-                disp().setCurrent(new StopPointsList(stopPoints));
+                mStopPointsList = new StopPointsList(MainMidlet.this, stopPoints);
+                disp().setCurrent(mStopPointsList);
               }
             });
           }
