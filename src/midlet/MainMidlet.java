@@ -1,7 +1,6 @@
 package midlet;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
