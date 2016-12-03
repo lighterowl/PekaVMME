@@ -19,14 +19,14 @@ import util.Serialization;
  */
 public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver {
 
-  private final MainForm mMainForm;
+  private final SavedBollardList mMainForm;
   private final AddStopsForm mAddStopsForm;
   private StopPointsList mStopPointsList;
   private BollardsList mBollardsList;
   private final Vector mSavedBollards;
 
   public MainMidlet() {
-    mMainForm = new MainForm(this);
+    mMainForm = new SavedBollardList(this);
     mAddStopsForm = new AddStopsForm(this);
     mSavedBollards = new Vector();
   }
