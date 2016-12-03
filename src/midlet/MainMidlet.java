@@ -34,11 +34,11 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     mSavedBollards = new Vector();
     mSavedBollardsList = new SavedBollardList(this, mSavedBollards);
     mAddStopsForm = new AddStopsForm(this);
-    restoreSavedBollards();
   }
 
   public void startApp() {
     if (Serialization.initializeUTF8()) {
+      restoreSavedBollards();
       disp().setCurrent(mSavedBollardsList);
     } else {
       Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "

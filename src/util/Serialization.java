@@ -33,7 +33,12 @@ public class Serialization {
   private static String NAME_FOR_UTF8;
 
   public static byte[] toByteArray(String s) {
-    byte[] encodedString = s.getBytes();
+    byte[] encodedString = null;
+    try {
+      encodedString = s.getBytes(NAME_FOR_UTF8);
+    } catch (UnsupportedEncodingException ex) {
+      ex.printStackTrace();
+    }
     byte[] encodedLength = {
       (byte) (encodedString.length >>> 24),
       (byte) (encodedString.length >>> 16),
@@ -54,6 +59,6 @@ public class Serialization {
             | encodedLength[3];
     byte[] encodedString = new byte[length];
     stream.read(encodedString);
-    return new String(encodedString);
+    return new String(encodedString, NAME_FOR_UTF8);
   }
 }
