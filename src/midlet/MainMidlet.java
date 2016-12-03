@@ -23,10 +23,12 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private final AddStopsForm mAddStopsForm;
   private StopPointsList mStopPointsList;
   private BollardsList mBollardsList;
+  private final Vector mSavedBollards;
 
   public MainMidlet() {
     mMainForm = new MainForm(this);
     mAddStopsForm = new AddStopsForm(this);
+    mSavedBollards = new Vector();
   }
 
   public void startApp() {
@@ -136,6 +138,16 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
       }
     });
     t.start();
+  }
+
+  public void addToSavedBollards(Vector newBollards) {
+    // TODO : change this to a hashtable if performance suffers.
+    for (int i = 0; i < newBollards.size(); ++i) {
+      Object newBollard = newBollards.elementAt(i);
+      if (!mSavedBollards.contains(newBollard)) {
+        mSavedBollards.addElement(newBollard);
+      }
+    }
   }
 
   private Display disp() {
