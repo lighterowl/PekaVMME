@@ -30,7 +30,15 @@ public class BollardsList extends List {
     setCommandListener(new CommandListener() {
       public void commandAction(Command c, Displayable d) {
         if (c == ADD_BOLLARDS) {
-          // notify the midlet about the chosen bollards
+          boolean[] selectedFlags = new boolean[size()];
+          int numSelected = getSelectedFlags(selectedFlags);
+          Vector newBollards = new Vector(numSelected);
+          for (int i = 0; i < selectedFlags.length; ++i) {
+            if (selectedFlags[i]) {
+              newBollards.addElement(mBollards.elementAt(i));
+            }
+          }
+          mMidlet.addToSavedBollards(newBollards);
         } else if (c == BACK_COMMAND) {
           mMidlet.goBack();
         }

@@ -148,6 +148,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
         mSavedBollards.addElement(newBollard);
       }
     }
+    // TODO : revert back to the main form with updated bollard list.
   }
 
   private Display disp() {
