@@ -17,4 +17,8 @@ public class BollardWithTimes extends Bollard {
       mArrivalTimes.addElement(new ArrivalTime(times.getJSONObject(i)));
     }
   }
+
+  public Vector getArrivalTimes() {
+    return mArrivalTimes;
+  }
 }

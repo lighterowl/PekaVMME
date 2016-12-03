@@ -16,6 +16,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import org.json.me.JSONException;
 import pekaapi.Bollard;
+import pekaapi.BollardWithTimes;
 import pekaapi.VMCommunicator;
 import util.Serialization;
 
@@ -28,6 +29,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private final AddStopsForm mAddStopsForm;
   private StopPointsList mStopPointsList;
   private BollardsList mBollardsList;
+  private BollardArrivalsForm mBollardArrivals;
   private final Vector mSavedBollards;
 
   public MainMidlet() {
@@ -130,6 +132,34 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
               public void run() {
                 mBollardsList = new BollardsList(MainMidlet.this, bollardsWithDirections);
                 disp().setCurrent(mBollardsList);
+              }
+            });
+          }
+
+          public void onJSONError(JSONException e) {
+            onJSONError(e);
+          }
+
+          public void onCommError(IOException e) {
+            onCommError(e);
+          }
+        });
+      }
+    });
+    t.start();
+  }
+
+  public void displayBollardArrivalTimes(final Bollard b) {
+    disp().setCurrent(createDownloadingAlert());
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        VMCommunicator.getTimes(b.getSymbol(), new VMCommunicator.TimesReceiver() {
+          public void onTimesReceived(final BollardWithTimes times) {
+            disp().callSerially(new Runnable() {
+              public void run() {
+                mBollardArrivals = new BollardArrivalsForm(MainMidlet.this,
+                        times.getArrivalTimes());
+                disp().setCurrent(mBollardArrivals);
               }
             });
           }

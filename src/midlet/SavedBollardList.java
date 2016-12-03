@@ -30,7 +30,8 @@ public class SavedBollardList extends List {
         } else if (c == ADD_STOPS_COMMAND) {
           mParent.displayAddStopsForm();
         } else if (c == SHOW_TIMES_COMMAND) {
-          // get the currently selected bollard and retrieve current times
+          mParent.displayBollardArrivalTimes((Bollard) mSavedBollards.elementAt(
+                  getSelectedIndex()));
         }
       }
     });
