@@ -19,21 +19,21 @@ import util.Serialization;
  */
 public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver {
 
-  private final SavedBollardList mMainForm;
+  private final SavedBollardList mSavedBollardsList;
   private final AddStopsForm mAddStopsForm;
   private StopPointsList mStopPointsList;
   private BollardsList mBollardsList;
   private final Vector mSavedBollards;
 
   public MainMidlet() {
-    mMainForm = new SavedBollardList(this);
+    mSavedBollardsList = new SavedBollardList(this);
     mAddStopsForm = new AddStopsForm(this);
     mSavedBollards = new Vector();
   }
 
   public void startApp() {
     if (Serialization.initializeUTF8()) {
-      disp().setCurrent(mMainForm);
+      disp().setCurrent(mSavedBollardsList);
     } else {
       Alert utf8NotSupported = new Alert("Błąd krytyczny", "Implementacja nie wspiera UTF-8. "
               + "Aplikacja zakończy działanie", null, AlertType.ERROR);
@@ -70,9 +70,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   public void goBack() {
     Displayable current = disp().getCurrent();
     if (current == mAddStopsForm) {
-      disp().setCurrent(mMainForm);
+      disp().setCurrent(mSavedBollardsList);
     } else if (current == mStopPointsList) {
-      disp().setCurrent(mMainForm);
+      disp().setCurrent(mSavedBollardsList);
       mStopPointsList = null;
     } else if (current == mBollardsList) {
       disp().setCurrent(mStopPointsList);
@@ -178,7 +178,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   public void onJSONError(JSONException e) {
     disp().callSerially(new Runnable() {
       public void run() {
-        disp().setCurrent(createNetworkErrorAlert(), mMainForm);
+        disp().setCurrent(createNetworkErrorAlert(), mSavedBollardsList);
       }
     });
     e.printStackTrace();
@@ -187,7 +187,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   public void onCommError(IOException e) {
     disp().callSerially(new Runnable() {
       public void run() {
-        disp().setCurrent(createNetworkErrorAlert(), mMainForm);
+        disp().setCurrent(createNetworkErrorAlert(), mSavedBollardsList);
       }
     });
     e.printStackTrace();
