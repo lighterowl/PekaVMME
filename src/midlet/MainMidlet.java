@@ -1,5 +1,6 @@
 package midlet;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
@@ -10,7 +11,11 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 import javax.microedition.midlet.*;
+import javax.microedition.rms.RecordEnumeration;
+import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreException;
 import org.json.me.JSONException;
+import pekaapi.Bollard;
 import pekaapi.VMCommunicator;
 import util.Serialization;
 
@@ -29,6 +34,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     mSavedBollards = new Vector();
     mSavedBollardsList = new SavedBollardList(this, mSavedBollards);
     mAddStopsForm = new AddStopsForm(this);
+    restoreSavedBollards();
   }
 
   public void startApp() {
@@ -56,6 +62,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   }
 
   private void cleanup() {
+    saveBollardsIntoStorage();
   }
 
   public void shutdown() {
@@ -192,5 +199,64 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
       }
     });
     e.printStackTrace();
+  }
+
+  private void restoreSavedBollards() {
+    RecordStore rs = null;
+    RecordEnumeration recordReader = null;
+    ByteArrayInputStream input = null;
+    try {
+      rs = RecordStore.openRecordStore("PekaVMBollards", true);
+      recordReader = rs.enumerateRecords(null, null, false);
+      while (recordReader.hasNextElement()) {
+        input = new ByteArrayInputStream(recordReader.nextRecord());
+        mSavedBollards.addElement(new Bollard(input));
+        input.close();
+      }
+      mSavedBollardsList.updateBollards();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      // don't do anything : any errors here are not critical.
+    } finally {
+      try {
+        if (input != null) {
+          input.close();
+        }
+        if (recordReader != null) {
+          recordReader.destroy();
+        }
+        if (rs != null) {
+          rs.closeRecordStore();
+        }
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+
+  private void saveBollardsIntoStorage() {
+    RecordStore rs = null;
+    try {
+      RecordStore.deleteRecordStore("PekaVMBollards");
+    } catch (RecordStoreException ex) {
+      ex.printStackTrace();
+    }
+    try {
+      rs = RecordStore.openRecordStore("PekaVMBollards", true);
+      for (int i = 0; i < mSavedBollards.size(); ++i) {
+        byte[] serializedBollard = ((Bollard) mSavedBollards.elementAt(i)).toByteArray();
+        rs.addRecord(serializedBollard, 0, serializedBollard.length);
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      try {
+        if (rs != null) {
+          rs.closeRecordStore();
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
