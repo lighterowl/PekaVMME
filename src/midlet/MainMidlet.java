@@ -26,9 +26,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private final Vector mSavedBollards;
 
   public MainMidlet() {
-    mSavedBollardsList = new SavedBollardList(this);
-    mAddStopsForm = new AddStopsForm(this);
     mSavedBollards = new Vector();
+    mSavedBollardsList = new SavedBollardList(this, mSavedBollards);
+    mAddStopsForm = new AddStopsForm(this);
   }
 
   public void startApp() {
@@ -148,7 +148,8 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
         mSavedBollards.addElement(newBollard);
       }
     }
-    // TODO : revert back to the main form with updated bollard list.
+    mSavedBollardsList.updateBollards();
+    disp().setCurrent(mSavedBollardsList);
   }
 
   private Display disp() {
