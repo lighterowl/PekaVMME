@@ -153,7 +153,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     disp().setCurrent(createDownloadingAlert());
     Thread t = new Thread(new Runnable() {
       public void run() {
-        VMCommunicator.getTimes(b.getSymbol(), new VMCommunicator.TimesReceiver() {
+        VMCommunicator.getTimes(b.getTag(), new VMCommunicator.TimesReceiver() {
           public void onTimesReceived(final BollardWithTimes times) {
             disp().callSerially(new Runnable() {
               public void run() {

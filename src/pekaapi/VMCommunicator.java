@@ -278,12 +278,12 @@ public class VMCommunicator {
     });
   }
 
-  public static void getTimes(final String bollardSymbol, final TimesReceiver cbk) {
+  public static void getTimes(final String bollardTag, final TimesReceiver cbk) {
     readVirtualMonitorData(cbk, new MethodContext() {
       public Invocation getParams() {
         try {
           JSONObject o = new JSONObject();
-          o.put("symbol", bollardSymbol);
+          o.put("symbol", bollardTag);
           return new Invocation("getTimes", o.toString());
         } catch (JSONException e) {
         }
