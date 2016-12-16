@@ -13,7 +13,7 @@ public class StopPointsList extends List {
   private final Vector mStopPoints;
   private final MainMidlet mMidlet;
   private static final Command BACK_COMMAND = new Command("Powrót", Command.BACK, 1);
-  private static final Command CHOOSE_STOP_POINT = new Command("Wybierz", Command.ITEM, 1);
+  private static final Command CHOOSE_STOP_POINT = new Command("Dodaj", Command.ITEM, 1);
 
   public StopPointsList(MainMidlet midlet, Vector stopPoints) {
     super("Lista przystanków", Choice.EXCLUSIVE);
