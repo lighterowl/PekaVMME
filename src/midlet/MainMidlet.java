@@ -159,6 +159,34 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     t.start();
   }
 
+  public void displayBollardsAtStreet(final String streetName) {
+    disp().setCurrent(createDownloadingAlert());
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        VMCommunicator.getBollardsByStreet(streetName,
+                new VMCommunicator.BollardsByStreetReceiver() {
+          public void onBollardsByStreetReceived(final Vector bollardsWithDirections) {
+            disp().callSerially(new Runnable() {
+              public void run() {
+                mBollardsList = new BollardsList(MainMidlet.this, bollardsWithDirections);
+                disp().setCurrent(mBollardsList);
+              }
+            });
+          }
+
+          public void onJSONError(JSONException e) {
+            onJSONError(e);
+          }
+
+          public void onCommError(IOException e) {
+            onCommError(e);
+          }
+        });
+      }
+    });
+    t.start();
+  }
+
   public void displayBollardArrivalTimes(final Bollard b) {
     disp().setCurrent(createDownloadingAlert());
     Thread t = new Thread(new Runnable() {

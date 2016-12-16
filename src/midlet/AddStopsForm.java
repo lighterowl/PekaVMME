@@ -40,7 +40,7 @@ public class AddStopsForm extends Form {
               parent.displayStopPoints(pattern);
               break;
             case 1:
-              // displayStopPointsByStreet
+              parent.displayBollardsAtStreet(pattern);
               break;
             case 2:
               // displayStopPointsByLine
