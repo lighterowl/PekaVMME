@@ -1,6 +1,9 @@
 package midlet;
 
 import java.util.Vector;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
@@ -10,6 +13,7 @@ public class BollardArrivalsForm extends Form {
 
   private final MainMidlet mMidlet;
   private final Vector mArrivalTimes;
+  private static final Command BACK_COMMAND = new Command("Powrót", Command.BACK, 1);
 
   public BollardArrivalsForm(MainMidlet midlet, Vector arrivalTimes) {
     super("Odjazdy");
@@ -27,5 +31,14 @@ public class BollardArrivalsForm extends Form {
       StringItem dest = new StringItem(t.getDestination(), null);
       append(dest);
     }
+
+    addCommand(BACK_COMMAND);
+    setCommandListener(new CommandListener() {
+      public void commandAction(Command c, Displayable d) {
+        if (c == BACK_COMMAND) {
+          mMidlet.goBack();
+        }
+      }
+    });
   }
 }

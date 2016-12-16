@@ -86,6 +86,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     } else if (current == mBollardsList) {
       disp().setCurrent(mStopPointsList);
       mBollardsList = null;
+    } else if (current == mBollardArrivals) {
+      disp().setCurrent(mSavedBollardsList);
+      mBollardArrivals = null;
     }
   }
 
