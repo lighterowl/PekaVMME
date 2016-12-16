@@ -2,6 +2,8 @@ package midlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
@@ -31,6 +33,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private BollardsList mBollardsList;
   private BollardArrivalsForm mBollardArrivals;
   private final Vector mSavedBollards;
+  private Timer mArrivalRefreshTimer;
+  private Bollard mCurrentBollard;
+  private static final int ARRIVAL_REFRESH_PERIOD = 10000;
 
   public MainMidlet() {
     mSavedBollards = new Vector();
@@ -89,6 +94,8 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
     } else if (current == mBollardArrivals) {
       disp().setCurrent(mSavedBollardsList);
       mBollardArrivals = null;
+      stopArrivalRefreshTimer();
+      mCurrentBollard = null;
     }
   }
 
@@ -177,7 +184,9 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
         });
       }
     });
+    mCurrentBollard = b;
     t.start();
+    startArrivalRefreshTimer();
   }
 
   public void addToSavedBollards(Vector newBollards) {
@@ -291,5 +300,23 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
         e.printStackTrace();
       }
     }
+  }
+
+  private void startArrivalRefreshTimer() {
+    if (mArrivalRefreshTimer != null) {
+      // already started
+      return;
+    }
+    mArrivalRefreshTimer = new Timer();
+    mArrivalRefreshTimer.schedule(new TimerTask() {
+      public void run() {
+        displayBollardArrivalTimes(mCurrentBollard);
+      }
+    }, ARRIVAL_REFRESH_PERIOD, ARRIVAL_REFRESH_PERIOD);
+  }
+
+  private void stopArrivalRefreshTimer() {
+    mArrivalRefreshTimer.cancel();
+    mArrivalRefreshTimer = null;
   }
 }
