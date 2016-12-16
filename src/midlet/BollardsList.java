@@ -14,7 +14,7 @@ public class BollardsList extends List {
 
   private final MainMidlet mMidlet;
   private final Vector mBollards;
-  private static final Command ADD_BOLLARDS = new Command("Zaznacz", Command.ITEM, 1);
+  private static final Command ADD_BOLLARDS = new Command("Dodaj", Command.ITEM, 1);
   private static final Command BACK_COMMAND = new Command("Powrót", Command.BACK, 1);
 
   public BollardsList(MainMidlet midlet, Vector bollards) {
