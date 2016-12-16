@@ -61,7 +61,9 @@ public class BollardsList extends List {
       }
       return buf.toString();
     } else {
-      return new String();
+      StringBuffer buf = new StringBuffer();
+      buf.append('\n').append(b.getName());
+      return buf.toString();
     }
   }
 }
