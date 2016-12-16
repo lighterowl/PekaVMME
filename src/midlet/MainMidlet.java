@@ -35,6 +35,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
   private final Vector mSavedBollards;
   private Timer mArrivalRefreshTimer;
   private Bollard mCurrentBollard;
+  private LineRouteForm mLineRouteForm;
   private static final int ARRIVAL_REFRESH_PERIOD = 10000;
 
   public MainMidlet() {
@@ -96,6 +97,8 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
       mBollardArrivals = null;
       stopArrivalRefreshTimer();
       mCurrentBollard = null;
+    } else if (current == mLineRouteForm) {
+      disp().setCurrent(mSavedBollardsList);
     }
   }
 
@@ -140,8 +143,7 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
           public void onBollardsByStopPointReceived(final Vector bollardsWithDirections) {
             disp().callSerially(new Runnable() {
               public void run() {
-                mBollardsList = new BollardsList(MainMidlet.this, bollardsWithDirections);
-                disp().setCurrent(mBollardsList);
+                displayBollards(bollardsWithDirections);
               }
             });
           }
@@ -168,8 +170,40 @@ public class MainMidlet extends MIDlet implements VMCommunicator.ResultReceiver 
           public void onBollardsByStreetReceived(final Vector bollardsWithDirections) {
             disp().callSerially(new Runnable() {
               public void run() {
-                mBollardsList = new BollardsList(MainMidlet.this, bollardsWithDirections);
-                disp().setCurrent(mBollardsList);
+                displayBollards(bollardsWithDirections);
+              }
+            });
+          }
+
+          public void onJSONError(JSONException e) {
+            onJSONError(e);
+          }
+
+          public void onCommError(IOException e) {
+            onCommError(e);
+          }
+        });
+      }
+    });
+    t.start();
+  }
+
+  public void displayBollards(final Vector bollards) {
+    mBollardsList = new BollardsList(MainMidlet.this, bollards);
+    disp().setCurrent(mBollardsList);
+  }
+
+  public void displayLineRoute(final String lineName) {
+    disp().setCurrent(createDownloadingAlert());
+    Thread t = new Thread(new Runnable() {
+      public void run() {
+        VMCommunicator.getBollardsByLine(lineName,
+                new VMCommunicator.BollardsByLineReceiver() {
+          public void onBollardsByLineReceived(final Vector lineRoutes) {
+            disp().callSerially(new Runnable() {
+              public void run() {
+                mLineRouteForm = new LineRouteForm(MainMidlet.this, lineName, lineRoutes);
+                disp().setCurrent(mLineRouteForm);
               }
             });
           }
