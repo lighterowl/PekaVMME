@@ -32,14 +32,10 @@ public class BollardArrivalsForm extends Form {
 
     for (int i = 0; i < mArrivalTimes.size(); ++i) {
       ArrivalTime t = (ArrivalTime) mArrivalTimes.elementAt(i);
-      System.err.println(t.getLine());
-      System.err.println(t.getDestination());
-      System.err.println(t.getMinutesToArrive());
-      StringItem line = new StringItem(t.getLine(), null);
-      line.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM));
-      append(line);
-      StringItem dest = new StringItem(t.getDestination(), null);
-      append(dest);
+      StringBuffer buf = new StringBuffer();
+      buf.append(t.getLine()).append(" => ").append(t.getDestination()).append(" : ").
+              append(t.getMinutesToArrive()).append(" min");
+      append(new StringItem(buf.toString(), null));
     }
 
     addCommand(BACK_COMMAND);
