@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.StringItem;
 import pekaapi.ArrivalTime;
+import util.Sorting;
 
 public class BollardArrivalsForm extends Form {
 
@@ -19,6 +20,15 @@ public class BollardArrivalsForm extends Form {
     super("Odjazdy");
     mMidlet = midlet;
     mArrivalTimes = arrivalTimes;
+
+    // ensure that the vector is always sorted according to the ETA in ascending order.
+    util.Sorting.sort(mArrivalTimes, new Sorting.Comparator() {
+      public boolean isLessThan(Object a, Object b) {
+        ArrivalTime ta = (ArrivalTime) a;
+        ArrivalTime tb = (ArrivalTime) b;
+        return ta.getMinutesToArrive() < tb.getMinutesToArrive();
+      }
+    });
 
     for (int i = 0; i < mArrivalTimes.size(); ++i) {
       ArrivalTime t = (ArrivalTime) mArrivalTimes.elementAt(i);
