@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
-import midlet.MainMidlet;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 import org.json.me.JSONObject;
